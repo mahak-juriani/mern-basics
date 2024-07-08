@@ -1,42 +1,28 @@
+
 const express = require("express");
 const mongoose = require("mongoose");
+const app = express();
+require('dotenv').config()
+const productRoutes = require('./routes/productRoutes')
+const userRoutes = require('./routes/userRoutes')
+
+
+app.use(express.json());
 
 mongoose
-  .connect(
-    "mongodb+srv://mahakjuriani:Q1OE881PppLiigIU@cluster0.xk4gquj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
+  .connect(process.env.MONGO_URL)
   .then(() => {
     console.log("Db Connected");
   })
   .catch((err) => {
-    console.log("Failed" , err);
+    console.log("Db connection Failed", err);
   });
 
-//Product Schema
 
-const productSchema = new mongoose.Schema({
-    productName : {
-        type : String, 
-        required : true
-    },
-    productPrice : {
-        type : String,
-        required : true
-    },
-    isInStock : {
-        type : Boolean,
-        required : true
-    },
-    category : {
-        type : String,
-        required : true
-    }
-});
+  app.use('/api/products' , productRoutes)
+  app.use('/api/users', userRoutes)
 
 
-
-const app = express();
-
-app.listen(8080, () => {
-  console.log("Server sarted at port 8080");
+app.listen(8086, () => {
+  console.log("Server sarted at port 8086");
 });
